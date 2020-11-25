@@ -1,0 +1,5 @@
+#N canvas 131 278 671 580 12;
+#X obj 57 46 adc~ 1;
+#X obj 217 46 adc~ 2;
+#X obj 57 516 dac~ 1;
+#X obj 217 516 dac~ 2;
