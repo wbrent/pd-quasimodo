@@ -43,9 +43,10 @@
 #X connect 6 0 7 0;
 #X connect 7 0 3 0;
 #X restore 23 186 pd delay-read;
-#X obj 210 160 bng 15 250 50 0 delay-clear empty c 17 7 0 12 -261234
--1 -1;
-#X floatatom 210 130 10 0 0 1 ms delay-deltime-set delay-deltime;
+#X obj 210 160 bng 15 250 50 0 delay-clear empty c 17 7 0 12 #fcc4c4
+#000000 #000000;
+#X floatatom 210 130 10 0 0 1 ms delay-deltime-set delay-deltime 0
+;
 #X connect 0 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 1 0;
@@ -60,14 +61,14 @@
 #X obj 230 122 *~;
 #X obj 40 75 +~;
 #X floatatom 756 125 5 -100 12 1 instrument-gain instrument-gain-set
-instrument-gain;
+instrument-gain 0;
 #X text 243 229 Here \, we capture the local mic signal and mix it
 with the remote-direct signal. Note that the mic signal will contain
 the room-amplified version of the remote signal as well.;
 #X obj 230 52 inlet~;
 #X obj 304 84 + 100;
 #X floatatom 756 147 5 -100 12 1 room-mic-gain room-mic-gain-set room-mic-gain
-;
+0;
 #X obj 544 130 dbtorms;
 #X obj 544 154 pack f 40;
 #X obj 544 178 line~;
@@ -106,13 +107,13 @@ the chain and send it straight out to the local loudspeaker;
 #X obj 305 208 line~;
 #X obj 231 152 *~;
 #X floatatom 560 130 5 -100 12 1 remote-direct-gain remote-direct-gain-set
-remote-direct-gain;
+remote-direct-gain 0;
 #X obj 115 160 dbtorms;
 #X obj 115 184 pack f 40;
 #X obj 115 208 line~;
 #X obj 41 152 *~;
 #X floatatom 560 160 5 -100 12 1 remote-amplification-gain remote-amplification-gain-set
-remote-amplification-gain;
+remote-amplification-gain 0;
 #X obj 231 252 outlet~;
 #X obj 115 90 r remote-direct-gain;
 #X obj 305 90 r remote-amplification-gain;
@@ -137,21 +138,11 @@ remote-amplification-gain;
 #X obj 360 301 dac~ 1;
 #X obj 360 351 adc~ 1;
 #X obj 380 391 vumeter;
-#X text 417 299 << route this signal (pure_data:output0) to your local
-loudspeaker, f 40;
-#X text 124 696 Route this signal (pure_data:output1) to the next player's
-JackTrip send, f 39;
 #X obj 360 220 rvb-module;
 #X obj 127 219 rvb-module;
 #X obj 127 55 adc~ 3;
-#X text 124 16 Route the previous player's JackTrip receive to this
-input of Pd (pure_data:input2), f 45;
-#X text 417 349 << route your direct instrument signal to this input
-of Pd (pure_data:input0), f 39;
 #X obj 485 448 vumeter;
 #X obj 465 408 adc~ 2;
-#X text 522 406 << route your room mic signal to this input of Pd (pure_data:input1)
-, f 39;
 #X text 472 217 << add some cheap reverb to smooth out the signal if
 desired, f 22;
 #N canvas 476 131 569 499 limiter 0;
@@ -295,12 +286,12 @@ desired, f 22;
 #X connect 55 0 17 0;
 #X connect 55 0 53 0;
 #X restore 96 433 pd parameters;
-#X floatatom 250 80 3 0 100 0 limit #0-limit-set #0-limit;
-#X floatatom 250 101 3 0 20 0 knee #0-knee-set #0-knee;
-#X floatatom 250 122 3 0 50 0 boost #0-boost-set #0-boost;
-#X floatatom 250 143 3 0 200 0 ratio #0-ratio-set #0-ratio;
-#X floatatom 250 165 3 0 100 0 thresh #0-thresh-set #0-thresh;
-#X floatatom 250 186 3 0 200 0 speed #0-speed-set #0-speed;
+#X floatatom 250 80 3 0 100 0 limit #0-limit-set #0-limit 0;
+#X floatatom 250 101 3 0 20 0 knee #0-knee-set #0-knee 0;
+#X floatatom 250 122 3 0 50 0 boost #0-boost-set #0-boost 0;
+#X floatatom 250 143 3 0 200 0 ratio #0-ratio-set #0-ratio 0;
+#X floatatom 250 165 3 0 100 0 thresh #0-thresh-set #0-thresh 0;
+#X floatatom 250 186 3 0 200 0 speed #0-speed-set #0-speed 0;
 #N canvas 426 129 503 643 run-compander 0;
 #X obj 47 20 inlet~;
 #X obj 83 174 slop~ 0 0 0 0 1e+09;
@@ -358,16 +349,26 @@ the difference between the measured and desired level, f 27;
 #X restore 127 644 pd limiter;
 #X text 210 644 << limit to -6dB to help prevent saturation in the
 feedback loop, f 66;
-#X connect 3 0 20 0;
+#X text 124 16 Route the previous player's JackTrip receive to this
+input of Pd (pure_data:input3), f 45;
+#X text 417 299 << route this signal (pure_data:output1) to your local
+loudspeaker, f 40;
+#X text 417 349 << route your direct instrument signal to this input
+of Pd (pure_data:input1), f 39;
+#X text 522 406 << route your room mic signal to this input of Pd (pure_data:input2)
+, f 39;
+#X text 124 696 Route this signal (pure_data:output2) to the next player's
+JackTrip send, f 39;
+#X connect 3 0 15 0;
 #X connect 4 0 3 0;
-#X connect 5 0 12 0;
-#X connect 5 1 11 0;
+#X connect 5 0 10 0;
+#X connect 5 1 9 0;
 #X connect 7 0 8 0;
 #X connect 7 0 4 1;
-#X connect 11 0 6 0;
-#X connect 12 0 4 0;
-#X connect 13 0 5 0;
-#X connect 13 0 2 0;
-#X connect 17 0 16 0;
-#X connect 17 0 4 2;
-#X connect 20 0 0 0;
+#X connect 9 0 6 0;
+#X connect 10 0 4 0;
+#X connect 11 0 5 0;
+#X connect 11 0 2 0;
+#X connect 13 0 12 0;
+#X connect 13 0 4 2;
+#X connect 15 0 0 0;
