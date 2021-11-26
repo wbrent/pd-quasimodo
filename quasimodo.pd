@@ -8,7 +8,7 @@
 #X obj 55 68 t b b b;
 #X msg 108 237 \; delay-deltime-set 100 \;;
 #X msg 168 127 \; remote-direct-gain-set -24 \; remote-amplification-gain-set
--12 \; instrument-gain-set -12 \; room-mic-gain-set -6 \;;
+-12 \; room-mic-gain-set -6 \;;
 #X connect 0 0 3 0;
 #X connect 3 0 1 0;
 #X connect 3 1 4 0;
@@ -55,19 +55,7 @@
 #N canvas 379 74 1198 376 capture-local-mic-signal 0;
 #X obj 40 291 outlet~;
 #X obj 40 51 inlet~;
-#X obj 304 130 dbtorms;
-#X obj 304 154 pack f 40;
-#X obj 304 178 line~;
-#X obj 230 122 *~;
-#X obj 40 75 +~;
-#X floatatom 756 125 5 -100 12 1 instrument-gain instrument-gain-set
-instrument-gain 0;
-#X text 243 229 Here \, we capture the local mic signal and mix it
-with the remote-direct signal. Note that the mic signal will contain
-the room-amplified version of the remote signal as well.;
-#X obj 230 52 inlet~;
-#X obj 304 84 + 100;
-#X floatatom 756 147 5 -100 12 1 room-mic-gain room-mic-gain-set room-mic-gain
+#X floatatom 756 127 5 -100 12 1 room-mic-gain room-mic-gain-set room-mic-gain
 0;
 #X obj 544 130 dbtorms;
 #X obj 544 154 pack f 40;
@@ -75,28 +63,19 @@ the room-amplified version of the remote signal as well.;
 #X obj 470 122 *~;
 #X obj 470 52 inlet~;
 #X obj 544 84 + 100;
-#X obj 304 60 r instrument-gain;
 #X obj 544 60 r room-mic-gain;
 #X obj 40 99 +~;
-#X connect 1 0 6 0;
-#X connect 2 0 3 0;
+#X connect 1 0 10 0;
 #X connect 3 0 4 0;
-#X connect 4 0 5 1;
+#X connect 4 0 5 0;
 #X connect 5 0 6 1;
-#X connect 6 0 20 0;
-#X connect 9 0 5 0;
-#X connect 10 0 2 0;
-#X connect 12 0 13 0;
-#X connect 13 0 14 0;
-#X connect 14 0 15 1;
-#X connect 15 0 20 1;
-#X connect 16 0 15 0;
-#X connect 17 0 12 0;
-#X connect 18 0 10 0;
-#X connect 19 0 17 0;
-#X connect 20 0 0 0;
-#X coords 0 -1 1 1 240 70 1 750 100;
-#X restore 127 458 pd capture-local-mic-signal;
+#X connect 6 0 10 1;
+#X connect 7 0 6 0;
+#X connect 8 0 3 0;
+#X connect 9 0 8 0;
+#X connect 10 0 0 0;
+#X coords 0 -1 1 1 240 50 1 750 100;
+#X restore 127 378 pd capture-local-mic-signal;
 #N canvas 196 108 939 391 receive-from-previous-player 0;
 #X obj 41 291 outlet~;
 #X obj 41 51 inlet~;
@@ -135,16 +114,9 @@ remote-amplification-gain 0;
 #X connect 17 0 8 0;
 #X coords 0 -1 1 1 240 85 1 550 100;
 #X restore 127 115 pd receive-from-previous-player;
-#X obj 360 301 dac~ 1;
-#X obj 360 351 adc~ 1;
-#X obj 380 391 vumeter;
-#X obj 360 220 rvb-module;
-#X obj 127 219 rvb-module;
-#X obj 127 55 adc~ 3;
-#X obj 485 448 vumeter;
-#X obj 465 408 adc~ 2;
-#X text 472 217 << add some cheap reverb to smooth out the signal if
-desired, f 22;
+#X obj 360 221 dac~ 1;
+#X obj 360 271 adc~ 1;
+#X obj 380 311 vumeter;
 #N canvas 476 131 569 499 limiter 0;
 #N canvas 0 50 450 250 (subpatch) 0;
 #X array \$0-dynamic-curve 102 float 3;
@@ -349,26 +321,23 @@ the difference between the measured and desired level, f 27;
 #X restore 127 644 pd limiter;
 #X text 210 644 << limit to -6dB to help prevent saturation in the
 feedback loop, f 66;
-#X text 124 16 Route the previous player's JackTrip receive to this
-input of Pd (pure_data:input3), f 45;
-#X text 417 299 << route this signal (pure_data:output1) to your local
+#X text 417 219 << route this signal (pure_data:output1) to your local
 loudspeaker, f 40;
-#X text 417 349 << route your direct instrument signal to this input
-of Pd (pure_data:input1), f 39;
-#X text 522 406 << route your room mic signal to this input of Pd (pure_data:input2)
-, f 39;
 #X text 124 696 Route this signal (pure_data:output2) to the next player's
 JackTrip send, f 39;
-#X connect 3 0 15 0;
-#X connect 4 0 3 0;
-#X connect 5 0 10 0;
-#X connect 5 1 9 0;
+#X obj 127 469 rvb-module;
+#X text 417 269 << route your microphone signal to this input of Pd
+(pure_data:input1), f 39;
+#X text 124 16 Route the previous player's JackTrip receive to this
+input of Pd (pure_data:input2), f 45;
+#X obj 127 55 adc~ 2;
+#X connect 3 0 9 0;
+#X connect 4 0 13 0;
+#X connect 5 0 4 0;
+#X connect 5 1 6 0;
 #X connect 7 0 8 0;
 #X connect 7 0 4 1;
-#X connect 9 0 6 0;
-#X connect 10 0 4 0;
-#X connect 11 0 5 0;
-#X connect 11 0 2 0;
-#X connect 13 0 12 0;
-#X connect 13 0 4 2;
-#X connect 15 0 0 0;
+#X connect 9 0 0 0;
+#X connect 13 0 3 0;
+#X connect 16 0 5 0;
+#X connect 16 0 2 0;
