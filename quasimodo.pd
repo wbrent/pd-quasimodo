@@ -1,21 +1,22 @@
-#N canvas 146 79 820 773 12;
+#N canvas 126 165 820 773 12;
 #X declare -path ./lib;
 #X obj 127 675 dac~ 2;
 #N canvas 970 146 499 437 init 0;
 #X obj 55 44 loadbang;
-#X msg 55 302 \; pd dsp 1 \;;
+#X msg 55 342 \; pd dsp 1 \;;
 #X obj 246 366 declare -path ./lib;
 #X obj 55 68 t b b b;
-#X msg 108 237 \; delay-deltime-set 100 \;;
-#X msg 168 127 \; remote-direct-gain-set -24 \; remote-amplification-gain-set
--12 \; room-mic-gain-set -6 \;;
+#X msg 168 127 \; previous-player-level-set -100 \; previous-player-monitor-level-set
+-100 \; local-mic-level-set -100 \;;
+#X msg 108 227 \; delay-lfo-depth-set 25 \; delay-lfo-rate-set 0.5
+\; delay-lfo-switch-set 0 \; delay-deltime-set 100 \;;
 #X connect 0 0 3 0;
 #X connect 3 0 1 0;
-#X connect 3 1 4 0;
-#X connect 3 2 5 0;
+#X connect 3 1 5 0;
+#X connect 3 2 4 0;
 #X restore 734 715 pd init;
 #X obj 47 115 vumeter;
-#N canvas 730 490 365 387 variable-delay 0;
+#N canvas 724 610 592 387 variable-delay 0;
 #X obj 23 36 inlet~;
 #X obj 23 306 outlet~;
 #N canvas 1028 167 498 300 delay-write 0;
@@ -28,42 +29,97 @@
 #X connect 1 0 3 0;
 #X connect 4 0 0 0;
 #X restore 23 109 pd delay-write;
-#N canvas 1186 67 420 552 delay-read 0;
-#X obj 41 46 inlet~;
-#X obj 41 486 outlet~;
-#X obj 41 426 delread4~ \$0-quasi-delay 1000;
-#X obj 170 295 +~ 50;
-#X text 223 293 minimum delay is 50ms;
-#X obj 170 199 r delay-deltime;
-#X obj 170 223 pack f 1000;
-#X obj 170 247 line~;
+#N canvas 919 67 712 552 delay-read 0;
+#X obj 280 15 inlet~;
+#X obj 360 486 outlet~;
+#X obj 360 426 delread4~ \$0-quasi-delay 1000;
+#X text 433 293 minimum delay is 50ms;
+#X obj 360 79 r delay-deltime;
+#X obj 360 103 pack f 1000;
+#X obj 360 127 line~;
+#X obj 444 182 osc~;
+#X obj 444 206 *~;
+#X obj 494 158 r delay-lfo-depth;
+#X obj 494 182 pack f 40;
+#X obj 494 206 line~;
+#X obj 504 92 pack f 40;
+#X obj 504 116 line~;
+#X obj 360 251 +~;
+#X obj 360 295 max~ 50;
+#X obj 136 238 snapshot~;
+#X obj 136 352 s delay-lfo-monitor-set;
+#X obj 104 70 r delay-lfo-switch;
+#X obj 136 174 metro 10;
+#X obj 136 262 + 0.5;
+#X obj 136 286 i;
+#X obj 104 114 t f f;
+#X obj 34 416 i;
+#X obj 34 480 s delay-deltime-set;
+#X obj 34 192 t b b;
+#X msg 75 222 0;
+#X obj 74 416 r delay-deltime;
+#X obj 34 168 select 0 1;
+#X obj 544 48 r delay-lfo-rate;
+#X obj 504 48 f;
 #X connect 2 0 1 0;
-#X connect 3 0 2 0;
+#X connect 4 0 5 0;
 #X connect 5 0 6 0;
-#X connect 6 0 7 0;
-#X connect 7 0 3 0;
+#X connect 6 0 14 0;
+#X connect 7 0 8 0;
+#X connect 8 0 14 1;
+#X connect 9 0 10 0;
+#X connect 10 0 11 0;
+#X connect 11 0 8 1;
+#X connect 12 0 13 0;
+#X connect 13 0 7 0;
+#X connect 14 0 15 0;
+#X connect 14 0 16 0;
+#X connect 15 0 2 0;
+#X connect 16 0 20 0;
+#X connect 18 0 22 0;
+#X connect 19 0 16 0;
+#X connect 20 0 21 0;
+#X connect 21 0 17 0;
+#X connect 22 0 28 0;
+#X connect 22 1 19 0;
+#X connect 23 0 24 0;
+#X connect 25 0 23 0;
+#X connect 25 1 26 0;
+#X connect 26 0 13 0;
+#X connect 27 0 23 1;
+#X connect 28 0 25 0;
+#X connect 28 1 30 0;
+#X connect 29 0 30 1;
+#X connect 30 0 12 0;
 #X restore 23 186 pd delay-read;
 #X obj 210 160 bng 15 250 50 0 delay-clear empty c 17 7 0 12 #fcc4c4
 #000000 #000000;
-#X floatatom 210 130 10 0 0 1 ms delay-deltime-set delay-deltime 0
-;
+#X floatatom 210 130 5 50 5000 1 ms delay-deltime-set delay-deltime
+0;
+#X obj 280 130 tgl 15 0 delay-lfo-switch delay-lfo-switch-set LFO 17
+7 0 12 #fcfcfc #000000 #000000 0 1;
+#X floatatom 280 160 5 0.1 10 1 rate delay-lfo-rate-set delay-lfo-rate
+0;
+#X floatatom 280 190 5 1 5000 1 depth delay-lfo-depth-set delay-lfo-depth
+0;
+#X floatatom 340 130 5 50 5000 1 ms delay-lfo-monitor-set - 0;
 #X connect 0 0 2 0;
 #X connect 2 0 3 0;
 #X connect 3 0 1 0;
-#X coords 0 -1 1 1 110 85 1 200 100;
-#X restore 127 545 pd variable-delay;
+#X coords 0 -1 1 1 200 120 1 200 100;
+#X restore 127 505 pd variable-delay;
 #N canvas 379 74 1198 376 capture-local-mic-signal 0;
 #X obj 40 291 outlet~;
 #X obj 40 51 inlet~;
-#X floatatom 756 127 5 -100 12 1 room-mic-gain room-mic-gain-set room-mic-gain
-0;
+#X floatatom 756 127 5 -100 12 1 local-mic-level local-mic-level-set
+local-mic-level 0;
 #X obj 544 130 dbtorms;
 #X obj 544 154 pack f 40;
 #X obj 544 178 line~;
 #X obj 470 122 *~;
 #X obj 470 52 inlet~;
 #X obj 544 84 + 100;
-#X obj 544 60 r room-mic-gain;
+#X obj 544 60 r local-mic-level;
 #X obj 40 99 +~;
 #X connect 1 0 10 0;
 #X connect 3 0 4 0;
@@ -75,7 +131,7 @@
 #X connect 9 0 8 0;
 #X connect 10 0 0 0;
 #X coords 0 -1 1 1 240 50 1 750 100;
-#X restore 127 378 pd capture-local-mic-signal;
+#X restore 127 338 pd capture-local-mic-signal;
 #N canvas 196 108 939 391 receive-from-previous-player 0;
 #X obj 41 291 outlet~;
 #X obj 41 51 inlet~;
@@ -85,17 +141,17 @@ the chain and send it straight out to the local loudspeaker;
 #X obj 305 184 pack f 40;
 #X obj 305 208 line~;
 #X obj 231 152 *~;
-#X floatatom 560 130 5 -100 12 1 remote-direct-gain remote-direct-gain-set
-remote-direct-gain 0;
+#X floatatom 560 130 5 -100 12 1 previous-player-level previous-player-level-set
+previous-player-level 0;
 #X obj 115 160 dbtorms;
 #X obj 115 184 pack f 40;
 #X obj 115 208 line~;
 #X obj 41 152 *~;
-#X floatatom 560 160 5 -100 12 1 remote-amplification-gain remote-amplification-gain-set
-remote-amplification-gain 0;
+#X floatatom 560 160 5 -100 12 1 previous-player-monitor-level previous-player-monitor-level-set
+previous-player-monitor-level 0;
 #X obj 231 252 outlet~;
-#X obj 115 90 r remote-direct-gain;
-#X obj 305 90 r remote-amplification-gain;
+#X obj 115 90 r previous-player-level;
+#X obj 305 90 r previous-player-monitor-level;
 #X obj 305 114 + 100;
 #X obj 115 114 + 100;
 #X connect 1 0 6 0;
@@ -112,9 +168,9 @@ remote-amplification-gain 0;
 #X connect 15 0 16 0;
 #X connect 16 0 3 0;
 #X connect 17 0 8 0;
-#X coords 0 -1 1 1 240 85 1 550 100;
+#X coords 0 -1 1 1 300 85 1 550 100;
 #X restore 127 115 pd receive-from-previous-player;
-#X obj 360 221 dac~ 1;
+#X obj 420 221 dac~ 1;
 #X obj 360 271 adc~ 1;
 #X obj 380 311 vumeter;
 #N canvas 476 131 569 499 limiter 0;
@@ -321,11 +377,11 @@ the difference between the measured and desired level, f 27;
 #X restore 127 644 pd limiter;
 #X text 210 644 << limit to -6dB to help prevent saturation in the
 feedback loop, f 66;
-#X text 417 219 << route this signal (pure_data:output1) to your local
+#X text 477 219 << route this signal (pure_data:output1) to your local
 loudspeaker, f 40;
 #X text 124 696 Route this signal (pure_data:output2) to the next player's
 JackTrip send, f 39;
-#X obj 127 469 rvb-module;
+#X obj 127 429 rvb-module;
 #X text 417 269 << route your microphone signal to this input of Pd
 (pure_data:input1), f 39;
 #X text 124 16 Route the previous player's JackTrip receive to this
