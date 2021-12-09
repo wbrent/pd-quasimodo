@@ -1,0 +1,2 @@
+/Users/brent/Dropbox/SOUNDFILES/IRs/Acousticas/04-Chambers/P058-LargeDark.wav
+-4.20342 -8.32134 -73 -70 -91 37 68 200 1 1;
